@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Lockscreen version="1" frameRate="30" displayDesktop="true" screenWidth="1080">
+	<Wallpaper/>
+	<!-- 年、月、日、星期赋值 -->
+	<Var name="datetime_year" expression="#year" const="true"/>
+	<Var name="datetime_month" expression="#month+1" const="true"/>
+	<Var name="datetime_day" expression="#date" const="true"/>
+	<Var name="datetime_day1" expression="#date" const="true"/>
+	<Var name="datetime_week" expression="#day_of_week" const="true"/>
+
+	<!-- 判断每月第一天是周几 -->
+	<Var name="day_week" expression="ifelse(#datetime_week+(1-#datetime_day1)%7{=0,#datetime_week+(1-#date)%7+7,#datetime_week+(1-#date)%7)"/>
+	<!-- 判断当月最大天数 -->
+	<Var name="month_max_day" expression="ifelse(#datetime_month==1||#datetime_month==3||#datetime_month==5||#datetime_month==7||#datetime_month==8||#datetime_month==10||#datetime_month==12,31,#datetime_month==4||#datetime_month==6||#datetime_month==9||#datetime_month==11,30,(#datetime_month==2)*#leap_year,29,28)" />
+	<!-- 上个月最大天数 -->
+	<Var name="last_month_max_day" expression="ifelse(#datetime_month==5||#datetime_month==7||#datetime_month==10||#datetime_month==12,30,#datetime_month==1||#datetime_month==2||#datetime_month==4||#datetime_month==6||#datetime_month==8||#datetime_month==9||#datetime_month==11,31,(#datetime_month==3)*#leap_year,29,28)" />
+	<!-- 判断是否闰年 -->
+	<Var name="leap_year" expression="((#datetime_year%4)==0)*((#datetime_year%100)!=0)+((#datetime_year%400)==0)"/>
+
+
+
+	<!-- 间距 -->
+	<Var name="gw" expression="110"/>
+	<Var name="gh" expression="140"/>
+
+	<Text x="#screen_width/2-250" y="300" align="center" alignV="center" color="#ffffff" size="32"  text="上一月" alpha="250"/>
+	<Text x="#screen_width/2+250" y="300" align="center" alignV="center" color="#ffffff" size="32"  text="下一月" alpha="250"/>
+	<DateTime x="#screen_width/2" y="300" align="center" alignV="center" color="#ffffff" size="35" format="yyyy年M月d日" value="#time_sys+86400000*(#datetime_day-#date+#datetime_go)"/>
+
+	<DateTime x="#screen_width/2" y="1550" align="center" alignV="center" size="40" color="#ffffff"  format="YYA年N月et" value="#time_sys+86400000*(#datetime_day-#date+#datetime_go)" />
+	<!-- 选定日期跟今天日期相差天数 -->
+	<Var name="datetime_ratio"  expression="#datetime_day+#datetime_go-#date"/>
+	<Text x="#screen_width/2" y="1620"  align="center" alignV="center" size="36" color="#ffffff" textExp="ifelse(#datetime_year==#year**#datetime_month==#month+1**#datetime_day==#date,'所选日期为今天','所选日期距离今天'+ifelse(#datetime_ratio}0,'还有','已过去')+abs(#datetime_ratio)+'天')"/>
+
+
+	<!-- 开屏初始化给农历赋值，也可设置点击时赋值 -->
+	<Var name="time_c" type="string[]" size="42" const="true"/>
+	<Var name="time_d" type="string[]" size="42" const="true"/>
+	<ExternalCommands>
+		<Trigger action="resume">
+			<LoopCommand count="42" indexName="LunarNum">
+				 <VariableCommand name="time_c" type="string[]" index="#LunarNum" expression="formatDate(ifelse(eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1'),'元旦节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'14')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'2'),'情人节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'8')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'3'),'妇女节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'12')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'3'),'植树节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'4'),'愚人节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'5'),'劳动节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'4')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'5'),'青年节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'6'),'儿童节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'7'),'建党节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'8'),'建军节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'9'),'开学日',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'10')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'9'),'教师节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'10'),'国庆节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'11')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'11'),'光棍节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'31')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'10'),'万圣节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'24')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'12'),'平安夜',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'25')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'12'),'圣诞节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'初一')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'正'),'春节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'十五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'正'),'元宵节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'初二')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'二'),'龙抬头',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'初五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'五'),'端午节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'初七')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'七'),'七夕节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'十五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'七'),'中元节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'十五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'八'),'中秋节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'初九')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'九'),'重阳节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'初八')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'腊'),'腊八节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'廿三')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'腊'),'小年',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'三十')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'腊'),'除夕',ifelse(eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),'初一'),'N月',ifelse(eqs(formatDate('t',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000),''),'e','t'))),#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000)" />
+				<VariableCommand name="time_d" type="string[]" index="#LunarNum" expression="formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum-#day_week+1)*86400000)" />
+			</LoopCommand>
+		</Trigger>
+	</ExternalCommands>
+
+	<!-- datetime_go变量每变化一次农历时间重现赋值，达到日历翻页给农历重新赋值的目的 -->
+	<Var  expression="#datetime_go" threshold="1">
+		<Trigger>
+			<LoopCommand count="42" indexName="LunarNum">
+				<VariableCommand name="time_c" type="string[]" index="#LunarNum" expression="formatDate(ifelse(eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1'),'元旦节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'14')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'2'),'情人节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'8')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'3'),'妇女节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'12')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'3'),'植树节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'4'),'愚人节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'5'),'劳动节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'4')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'5'),'青年节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'6'),'儿童节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'7'),'建党节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'8'),'建军节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'9'),'开学日',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'10')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'9'),'教师节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'1')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'10'),'国庆节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'11')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'11'),'光棍节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'31')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'10'),'万圣节',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'24')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'12'),'平安夜',eqs(formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'25')*eqs(formatDate('M',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'12'),'圣诞节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'初一')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'正'),'春节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'十五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'正'),'元宵节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'初二')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'二'),'龙抬头',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'初五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'五'),'端午节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'初七')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'七'),'七夕节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'十五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'七'),'中元节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'十五')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'八'),'中秋节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'初九')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'九'),'重阳节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'初八')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'腊'),'腊八节',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'廿三')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'腊'),'小年',eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'三十')*eqs(formatDate('N',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'腊'),'除夕',ifelse(eqs(formatDate('e',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),'初一'),'N月',ifelse(eqs(formatDate('t',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000),''),'e','t'))),#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000)" />
+				<VariableCommand name="time_d" type="string[]" index="#LunarNum" expression="formatDate('d',#time_sys+86400000*(1-#date)+(#LunarNum+#datetime_go-#day_week+1)*86400000)" />
+			</LoopCommand>
+		</Trigger>
+	</Var>
+
+
+ 	<!-- 上个月按钮 -->
+	<Button x="#screen_width/2-250-80" y="250" w="160" h="100" >
+		<Triggers>
+			<Trigger action="up">
+				<VariableCommand name="datetime_year" expression="ifelse(#datetime_month==1,#datetime_year-1,#datetime_year)"/>
+				<VariableCommand name="datetime_month" expression="ifelse(#datetime_month==1,12,#datetime_month-1)"/>
+				<VariableCommand name="month_max_day" expression="ifelse(#datetime_month==1||#datetime_month==3||#datetime_month==5||#datetime_month==7||#datetime_month==8||#datetime_month==10||#datetime_month==12,31,#datetime_month==4||#datetime_month==6||#datetime_month==9||#datetime_month==11,30,(#datetime_month==2)*#leap_year,29,28)"/>
+				<VariableCommand name="datetime_week" expression="ifelse((#datetime_week-#month_max_day%7){0,#datetime_week-#month_max_day%7+7,#datetime_week-#month_max_day%7)"/>
+				<VariableCommand name="datetime_go" expression="#datetime_go-#last_month_max_day" />
+			</Trigger>
+		</Triggers>
+	</Button>
+
+	<!-- 返回本月 -->
+	<Button x="#screen_width/2-80" y="250" w="160" h="100" >
+		<Triggers>
+			<Trigger action="up">
+				<VariableCommand name="datetime_week" expression="#day_of_week"/>
+				<VariableCommand name="datetime_year" expression="#year"/>
+				<VariableCommand name="datetime_day" expression="#date"/>
+				<VariableCommand name="datetime_month" expression="#month+1"/>
+				<VariableCommand name="datetime_go" expression="0" />
+			</Trigger>
+		</Triggers>
+	</Button>
+
+	<!-- 下个月按钮 -->
+	<Button x="#screen_width/2+250-80" y="250" w="160" h="100">
+		<Triggers>
+			<Trigger action="up">
+				<VariableCommand name="datetime_week" expression="ifelse(#datetime_week+#month_max_day%7}7,(#datetime_week+#month_max_day%7)-7,#datetime_week+#month_max_day%7)"/>
+				<VariableCommand name="datetime_year" expression="ifelse(#datetime_month==12,#datetime_year+1,#datetime_year)"/>
+				<VariableCommand name="datetime_month" expression="ifelse(#datetime_month==12,1,#datetime_month+1)"/>
+				<VariableCommand name="datetime_go" expression="#datetime_go+#month_max_day" />
+			</Trigger>
+		</Triggers>
+	</Button>
+
+
+
+	<Array count="42" indexName="datenum" x="#screen_width/2-#gw*3" y="600" >
+		<Text textExp="substr('日一二三四五六',#datenum,1)" size="36" y="-150" x="#datenum*#gw" color="#ffffff" align="center" visibility="lt(#datenum,7)" />
+		<!-- 当前日期背景 -->
+		<Circle x="(#datenum)%7*#gw" y="int(#datenum/7)*#gh" r="40" fillColor="#ffd647" visibility="eq(#date-1+#day_week,#datenum+1)*eq(#datetime_month,#month+1)*eq(#datetime_year,#year)" />
+		<!-- 选中日期背景 -->
+		<Circle x="(#datenum)%7*#gw" y="int(#datenum/7)*#gh" r="41" fillColor="#ff477b"  visibility="eq(#datenum+1-#day_week+1,#datetime_day)" />
+		<!-- 日期排列 -->
+		<Text x="(#datenum)%7*#gw" y="int(#datenum/7)*#gh" align="center" alignV="center" size="40" color="#ffffff" alpha="ifelse(ge(#datenum,#day_week-1)*lt(#datenum,#day_week-1+#month_max_day),255,100)" textExp="@time_d[#datenum]"/>
+		<!-- 农历与节假日 -->
+		<Text x="(#datenum)%7*#gw" y="int(#datenum/7)*#gh+60" align="center" alignV="center" size="20" color="#ffffff" alpha="ifelse(ge(#datenum,#day_week-1)*lt(#datenum,#day_week-1+#month_max_day),255,100)" textExp="@time_c[#datenum]"/>
+
+		<!-- 点选按钮 -->
+		<Button x="(#datenum)%7*#gw" y="int(#datenum/7)*#gh" w="100" h="100" align="center" alignV="center"  >
+			<Triggers>
+				<Trigger action="up">
+					<VariableCommand name="datetime_day" expression="#datenum + 1-#day_week+1" />
+				</Trigger>
+			</Triggers>
+		</Button>
+	</Array>
+
+
+	<!-- 上滑解锁 -->
+	<Unlocker name="unlocker" alwaysShow="true" >
+		<StartPoint x="0" y="0" w="#screen_width" h="#screen_height" easeType="QuintEaseOut" easeTime="800"/>
+		<EndPoint x="0" y="-#screen_height-400" w="#screen_width" h="#screen_height" >
+			<Path x="0" y="0" tolerance="2000">
+				<Position x="0" y="0" />
+				<Position x="0" y="-#screen_height" />
+			</Path>
+		</EndPoint>
+	</Unlocker>
+
+</Lockscreen>
