@@ -17,8 +17,6 @@
 	<!-- 判断是否闰年 -->
 	<Var name="leap_year" expression="((#datetime_year%4)==0)*((#datetime_year%100)!=0)+((#datetime_year%400)==0)"/>
 
-
-
 	<!-- 间距 -->
 	<Var name="gw" expression="110"/>
 	<Var name="gh" expression="140"/>
